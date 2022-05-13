@@ -18,4 +18,8 @@ public class OrderService {
         return Optional.ofNullable(orderQueue.poll());
     }
 
+    public void delete(Order order){
+        orderQueue.remove(order);
+    }
+
 }
