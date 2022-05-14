@@ -2,7 +2,7 @@ package model;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -12,7 +12,7 @@ import java.util.List;
 public class DeliveryOrder extends Order{
     //defined builder for super class on constructor
     @Builder(builderMethodName = "OrderBuilder")
-    public DeliveryOrder(int id, LocalDate orderTime, List<MenuEntry> OrderedProduct, String deliveryAddress) {
+    public DeliveryOrder(int id, Instant orderTime, List<MenuEntry> OrderedProduct, String deliveryAddress) {
         super(id, orderTime, OrderedProduct);
         this.deliveryAddress = deliveryAddress;
     }

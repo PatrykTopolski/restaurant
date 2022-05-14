@@ -2,7 +2,7 @@ package model;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class SpotOrder extends Order{
     //defined builder for super class on constructor
     @Builder(builderMethodName = "OrderBuilder")
-    public SpotOrder(int id, LocalDate orderTime, List<MenuEntry> OrderedProduct, int tableNumber) {
+    public SpotOrder(int id, Instant orderTime, List<MenuEntry> OrderedProduct, int tableNumber) {
         super(id, orderTime, OrderedProduct);
         this.tableNumber = tableNumber;
     }

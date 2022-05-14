@@ -1,8 +1,9 @@
 package service;
 
 
+import lombok.RequiredArgsConstructor;
 import model.MenuEntry;
-import repository.MenuRepository;
+import repository.Repository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,20 +11,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class MenuService {
-    private final MenuRepository<MenuEntry> repo;
+    private final Repository<MenuEntry> repo;
     private List<MenuEntry> entries;
 
-    public MenuService(MenuRepository<MenuEntry> repo) {
-        this.repo = repo;
-    }
 
     public void loadMenu() {
         System.out.println("loading menu");
         try {
             this.entries =  repo.readALl();
         } catch (IOException e) {
-            System.out.println("menu file not found \ngenerating new list");
+            System.out.println("menu file not found\ngenerating new list");
             this.entries = generateMenu();
         }
 

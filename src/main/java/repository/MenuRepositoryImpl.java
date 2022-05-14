@@ -9,7 +9,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class MenuRepositoryImpl implements MenuRepository<MenuEntry> {
+public class MenuRepositoryImpl implements Repository<MenuEntry> {
     String RESOURCE_PATH = "./target/generated-sources/menu.csv";
 
     @Override

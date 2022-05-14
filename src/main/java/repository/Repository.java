@@ -1,11 +1,9 @@
 package repository;
 
-import model.MenuEntry;
-
 import java.io.*;
 import java.util.List;
-public interface MenuRepository<T>{
+public interface Repository<T>{
     void saveAll(List<T> t) throws IOException;
-    List<MenuEntry> readALl() throws IOException;
+    List<T> readALl() throws IOException;
 
 }
