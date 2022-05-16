@@ -41,14 +41,8 @@ public class OrderConsumer extends Thread{
                 bench = nextOrder.get();
             } else {
                 System.out.println("no orders left");
-                try {
-                    System.out.println("waiting for orders");
-                    synchronized (this) {
-                        this.wait();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                System.out.println("waiting for orders");
+                bench = null;
             }
         }
     }
@@ -57,7 +51,8 @@ public class OrderConsumer extends Thread{
     public void run() {
         while (true){
             loadOrderToBench();
-            consumeOrder();
+            if (bench!= null)
+                consumeOrder();
         }
     }
 }

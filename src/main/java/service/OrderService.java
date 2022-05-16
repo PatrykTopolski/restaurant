@@ -13,15 +13,15 @@ public class OrderService {
 
     private final PriorityQueue<Order> orderQueue;
 
-    public void addOrder(Order order){
+    public synchronized void addOrder(Order order){
         orderQueue.add(order);
     }
 
-    public Optional<Order> getNextOrder(){
+    public synchronized Optional<Order> getNextOrder(){
         return Optional.ofNullable(orderQueue.poll());
     }
 
-    public Optional<Order> getNextDelayedOrder(){
+    public synchronized Optional<Order> getNextDelayedOrder(){
         Optional<Order> overdueOrder = orderQueue.stream().filter(order -> {
             long FIFTEEN_MINUTES = 900000;
             Duration durationBetween = Duration.between(order.getOrderTime(), Instant.now());
@@ -31,7 +31,7 @@ public class OrderService {
         return overdueOrder;
     }
 
-    public void delete(Order order){
+    public synchronized void delete(Order order){
         orderQueue.remove(order);
     }
 
