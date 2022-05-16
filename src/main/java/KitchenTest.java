@@ -23,7 +23,6 @@ public class KitchenTest {
         Thread.sleep(5000);
         addOrdersToService(service);
         System.out.println("ADDED NEW ORDERS");
-        consumer.notify();
         System.out.println("notified");
 
     }
