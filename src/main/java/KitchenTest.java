@@ -30,7 +30,10 @@ public class KitchenTest {
 
     private static void addOrdersToService(OrderService service){
         List<MenuEntry> orderedProducts = new ArrayList<>();
-        orderedProducts.add(MenuEntry.builder().price(2000).name("test entry").id(1).description("for testing").build());
+        orderedProducts.add(MenuEntry.builder()
+                .price(2000)
+                .name("test entry").id(1)
+                .description("for testing").build());
 
         service.addOrder(DeliveryOrder.OrderBuilder()
                 .deliveryAddress("testowa 2/1")
