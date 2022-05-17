@@ -1,7 +1,9 @@
-package model;
+package model.order;
 
 import lombok.Builder;
 import lombok.Data;
+import model.menu.MenuEntry;
+
 import java.time.Instant;
 import java.util.List;
 

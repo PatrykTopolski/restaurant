@@ -2,7 +2,7 @@ package service;
 
 
 import lombok.RequiredArgsConstructor;
-import model.MenuEntry;
+import model.menu.MenuEntry;
 import repository.Repository;
 
 import java.io.IOException;

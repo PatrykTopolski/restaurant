@@ -1,12 +1,12 @@
-import model.DeliveryOrder;
-import model.MenuEntry;
-import model.Order;
-import model.SpotOrder;
-import repository.CRUD;
-import repository.MenuRepository;
+import model.order.DeliveryOrder;
+import model.menu.MenuEntry;
+import model.order.SpotOrder;
+import repository.MenuRepositoryImpl;
+import repository.Repository;
+
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,20 +35,20 @@ public class App {
                 .price(5.99)
                 .build());
 
-        MenuRepository repo = new MenuRepository();
+        Repository<MenuEntry> repo = new MenuRepositoryImpl();
         repo.saveAll(entry);
         repo.readALl().forEach(System.out::println);
         DeliveryOrder deliveryOrder = DeliveryOrder
                 .OrderBuilder()
                 .id(1)
-                .orderTime(LocalDate.now())
+                .orderTime(Instant.now())
                 .OrderedProduct(null)
                 .deliveryAddress("test address")
                 .build();
         SpotOrder onSpotOrder = SpotOrder
                 .OrderBuilder()
                 .id(1)
-                .orderTime(LocalDate.now())
+                .orderTime(Instant.now())
                 .OrderedProduct(null)
                 .tableNumber(1)
                 .build();

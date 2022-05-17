@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import model.MenuEntry;
+import model.menu.MenuEntry;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

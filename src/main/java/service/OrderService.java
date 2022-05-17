@@ -1,7 +1,7 @@
 package service;
 
 import lombok.RequiredArgsConstructor;
-import model.Order;
+import model.order.Order;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -1,11 +1,10 @@
-import model.DeliveryOrder;
-import model.Order;
-import model.SpotOrder;
+import model.order.DeliveryOrder;
+import model.order.Order;
+import model.order.SpotOrder;
 import service.OrderService;
 import utils.OrdersComparator;
 
 import java.time.Instant;
-import java.time.temporal.TemporalAmount;
 import java.util.PriorityQueue;
 
 public class OrderTest {

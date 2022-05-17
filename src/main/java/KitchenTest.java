@@ -1,8 +1,8 @@
-import model.DeliveryOrder;
-import model.MenuEntry;
-import model.Order;
+import model.order.DeliveryOrder;
+import model.menu.MenuEntry;
+import model.order.Order;
 
-import model.SpotOrder;
+import model.order.SpotOrder;
 import service.OrderConsumer;
 import service.OrderService;
 import utils.OrdersComparator;

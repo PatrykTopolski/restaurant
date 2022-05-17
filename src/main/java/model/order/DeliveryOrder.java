@@ -1,22 +1,22 @@
-package model;
+package model.order;
 
 import lombok.*;
+import model.menu.MenuEntry;
 
 import java.time.Instant;
 import java.util.List;
-
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class SpotOrder extends Order{
+public class DeliveryOrder extends Order{
     //defined builder for super class on constructor
     @Builder(builderMethodName = "OrderBuilder")
-    public SpotOrder(int id, Instant orderTime, List<MenuEntry> OrderedProduct, int tableNumber) {
+    public DeliveryOrder(int id, Instant orderTime, List<MenuEntry> OrderedProduct, String deliveryAddress) {
         super(id, orderTime, OrderedProduct);
-        this.tableNumber = tableNumber;
+        this.deliveryAddress = deliveryAddress;
     }
 
-    private int tableNumber;
+    private String deliveryAddress;
 }

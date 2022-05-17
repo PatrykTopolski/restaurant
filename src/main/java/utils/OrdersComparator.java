@@ -1,7 +1,7 @@
 package utils;
 
-import model.Order;
-import model.SpotOrder;
+import model.order.Order;
+import model.order.SpotOrder;
 import java.util.Comparator;
 
 public class OrdersComparator implements Comparator<Order> {

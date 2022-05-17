@@ -1,7 +1,7 @@
 package service;
 
 import lombok.RequiredArgsConstructor;
-import model.Order;
+import model.order.Order;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,7 @@ public class OrderConsumer extends Thread{
             bench = overdueOrder.get();
         }else {
             Optional<Order> nextOrder = orderService.getNextOrder();
-            if (nextOrder.isPresent()){
-                bench = nextOrder.get();
-            } else {
-                System.out.println("no orders left");
-                System.out.println("waiting for orders");
-                bench = null;
-            }
+            bench = nextOrder.orElse(null);
         }
     }
 
