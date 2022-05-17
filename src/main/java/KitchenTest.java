@@ -3,7 +3,7 @@ import model.menu.MenuEntry;
 import model.order.Order;
 
 import model.order.SpotOrder;
-import service.OrderConsumer;
+import consumer.OrderConsumer;
 import service.OrderService;
 import utils.OrdersComparator;
 
@@ -18,12 +18,14 @@ public class KitchenTest {
         PriorityQueue<Order> q = new PriorityQueue<>(new OrdersComparator());
         OrderService service = new OrderService(q);
         addOrdersToService(service);
-        OrderConsumer  consumer = new OrderConsumer(service);
+        OrderConsumer  consumer = new OrderConsumer(service, new ArrayList<>());
         consumer.start();
         Thread.sleep(5000);
         addOrdersToService(service);
+        consumer.turnOff();
         System.out.println("ADDED NEW ORDERS");
         System.out.println("notified");
+        Thread.sleep(5000);
 
     }
 
@@ -31,7 +33,7 @@ public class KitchenTest {
         List<MenuEntry> orderedProducts = new ArrayList<>();
         orderedProducts.add(MenuEntry.builder()
                 .price(2000)
-                .name("test entry").id(1)
+                .name("test entry")
                 .description("for testing").build());
 
         service.addOrder(DeliveryOrder.OrderBuilder()
@@ -41,7 +43,7 @@ public class KitchenTest {
                 .OrderedProduct(orderedProducts)
                 .build());
 
-        orderedProducts.add(MenuEntry.builder().price(2000).name("test entry").id(1).description("for testing").build());
+        orderedProducts.add(MenuEntry.builder().price(2000).name("test entry").description("for testing").build());
 
         service.addOrder(SpotOrder.OrderBuilder()
                 .tableNumber(2)

@@ -14,18 +14,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MenuService {
     private final Repository<MenuEntry> repo;
-    private List<MenuEntry> entries;
+    private final List<MenuEntry> entries;
 
 
-    public void loadMenu() {
+    public void loadMenuFromFile() {
         System.out.println("loading menu");
         try {
-            this.entries =  repo.readALl();
+            entries.addAll(repo.readALl());
         } catch (IOException e) {
-            System.out.println("menu file not found\ngenerating new list");
-            this.entries = generateMenu();
+            System.out.println("menu file not found");
+//            this.entries = generateMenu();
         }
-
     }
 
     public void saveMenu(){
@@ -36,40 +35,31 @@ public class MenuService {
         }
     }
 
+    public int getNumberOfEntries(){
+        return entries.size();
+    }
     public void addMenuEntry(MenuEntry entry){
         entries.add(entry);
     }
 
     public void deleteEntry(int id){
-        Optional<MenuEntry> entry =  findById(id) ;
-        if (entry.isPresent()){
-            entries.remove(entry.get());
-        }else{
-            System.out.println("invalid Menu ID");
-        }
+        entries.remove(id);
     }
 
     public void changeAvailability(int id){
-        Optional<MenuEntry> entryOptional =  findById(id);
-        if (entryOptional.isPresent()){
-            MenuEntry entry = entryOptional.get();
-            entry.setAvailable(!entry.isAvailable());
-        }else{
-            System.out.println("invalid Menu ID");
-        }
+       entries.get(id).setAvailable(!entries.get(id).isAvailable());
     }
 
     public void printMenu(){
-        entries.stream()
-                .sorted(Comparator.comparing(MenuEntry::getId))
-                .forEach(System.out::println);
+        for (int i = 0; i < entries.size(); i++) {
+            System.out.println(i + ". " + entries.get(i).toString());
+        }
     }
 
     private List<MenuEntry> generateMenu() {
         List<MenuEntry> generatedList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             generatedList.add(MenuEntry.builder()
-                    .id(i)
                     .available(true)
                     .description("description: " + i)
                     .name("menu item : " + i)
@@ -78,9 +68,4 @@ public class MenuService {
         }
         return generatedList;
     }
-
-    private Optional<MenuEntry> findById(int id){
-        return entries.stream().filter(x -> x.getId() == id).findFirst();
-    }
-
 }

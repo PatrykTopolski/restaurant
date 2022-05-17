@@ -1,7 +1,8 @@
-package service;
+package consumer;
 
 import lombok.RequiredArgsConstructor;
 import model.order.Order;
+import service.OrderService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderConsumer extends Thread{
     private final OrderService orderService;
-    private List<Order> completedOrders = new ArrayList<>();
+    private final List<Order> completedOrders;
     private Order bench;
+    private boolean isRunning = true;
 
+    @Override
+    public void run() {
+        while (isRunning){
+            loadOrderToBench();
+            if (bench!= null)
+                prepareOrder();
+        }
+    }
 
-    public void consumeOrder() {
+    public void turnOff(){
+        isRunning = false;
+        System.out.println("turned kitchen off");
+    }
+
+    private void prepareOrder() {
         int THIRTY_SECONDS =  300;
         System.out.println("taking order from bench");
         bench.getOrderedProduct().forEach(x -> {
@@ -31,22 +46,13 @@ public class OrderConsumer extends Thread{
     }
 
 
-    public void loadOrderToBench(){
+    private void loadOrderToBench(){
         Optional<Order> overdueOrder = orderService.getNextDelayedOrder();
         if (overdueOrder.isPresent()){
             bench = overdueOrder.get();
         }else {
             Optional<Order> nextOrder = orderService.getNextOrder();
             bench = nextOrder.orElse(null);
-        }
-    }
-
-    @Override
-    public void run() {
-        while (true){
-            loadOrderToBench();
-            if (bench!= null)
-                consumeOrder();
         }
     }
 }
