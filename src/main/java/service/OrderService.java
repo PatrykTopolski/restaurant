@@ -10,11 +10,17 @@ import java.util.PriorityQueue;
 
 @RequiredArgsConstructor
 public class OrderService {
+    private int orderNumber = 0;
 
     private final PriorityQueue<Order> orderQueue;
 
     public synchronized void addOrder(Order order){
+        order.setId(orderNumber++);
         orderQueue.add(order);
+    }
+
+    public synchronized void printOrdersInQueue(){
+        orderQueue.forEach(System.out::println);
     }
 
     public synchronized Optional<Order> getNextOrder(){
