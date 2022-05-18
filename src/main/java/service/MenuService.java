@@ -20,11 +20,12 @@ public class MenuService {
     public void loadMenuFromFile() {
         System.out.println("loading menu");
         try {
+            this.entries.clear();
             entries.addAll(repo.readALl());
         } catch (IOException e) {
-            System.out.println("menu file not found");
-//            this.entries = generateMenu();
+            System.out.println("menu file not found\nsave to file first");
         }
+
     }
 
     public void saveMenu(){
@@ -35,37 +36,52 @@ public class MenuService {
         }
     }
 
-    public int getNumberOfEntries(){
-        return entries.size();
-    }
     public void addMenuEntry(MenuEntry entry){
+        entry.setId(entries.size());
         entries.add(entry);
     }
 
     public void deleteEntry(int id){
-        entries.remove(id);
+        Optional<MenuEntry> entry =  findById(id) ;
+        if (entry.isPresent()){
+            entries.remove(entry.get());
+        }else{
+            System.out.println("invalid Menu ID");
+        }
     }
 
     public void changeAvailability(int id){
-       entries.get(id).setAvailable(!entries.get(id).isAvailable());
+        Optional<MenuEntry> entryOptional =  findById(id);
+        if (entryOptional.isPresent()){
+            MenuEntry entry = entryOptional.get();
+            entry.setAvailable(!entry.isAvailable());
+        }else{
+            System.out.println("invalid Menu ID");
+        }
     }
 
     public void printMenu(){
-        for (int i = 0; i < entries.size(); i++) {
-            System.out.println(i + ". " + entries.get(i).toString());
-        }
+        entries.stream()
+                .sorted(Comparator.comparing(MenuEntry::getId))
+                .forEach(System.out::println);
     }
 
     private List<MenuEntry> generateMenu() {
         List<MenuEntry> generatedList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             generatedList.add(MenuEntry.builder()
+                    .id(i)
                     .available(true)
                     .description("description: " + i)
                     .name("menu item : " + i)
-                            .price(Math.random() * 50 +1)
+                    .price(Math.random() * 50 +1)
                     .build());
         }
         return generatedList;
     }
+
+    public Optional<MenuEntry> findById(int id){
+        return entries.stream().filter(x -> x.getId() == id).findFirst();
+    }
+
 }
