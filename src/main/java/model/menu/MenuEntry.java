@@ -22,4 +22,6 @@ public class MenuEntry {
     private double price;
     @JsonProperty("available")
     private boolean available;
+
+
 }

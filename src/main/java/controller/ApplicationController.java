@@ -10,6 +10,7 @@ import model.order.SpotOrder;
 import service.EmployeeService;
 import service.MenuService;
 import service.OrderService;
+import utils.MenuEntryUtil;
 
 
 import java.time.Instant;
@@ -110,7 +111,7 @@ public class ApplicationController {
             int orderId =  getInputInt("\nprovide id of entry from menu: ");
             Optional<MenuEntry> entry = menuService.findById(orderId);
             if (entry.isPresent()){
-                orderList.add(entry.get());
+                orderList.add(MenuEntryUtil.cloneMenuEntry(entry.get()));
             }else System.out.println("wrong entry id");
             String askingNext = getInputString("add next entry to order? Y/N");
             if (!askingNext.equals("Y"))

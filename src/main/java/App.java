@@ -11,6 +11,7 @@ import repository.Repository;
 import service.EmployeeService;
 import service.MenuService;
 import service.OrderService;
+import utils.MenuEntryUtil;
 import utils.OrdersComparator;
 
 
@@ -63,10 +64,12 @@ public class App {
 
     private static void addOrdersToService(OrderService service){
         List<MenuEntry> orderedProducts = new ArrayList<>();
-        orderedProducts.add(MenuEntry.builder()
+        MenuEntry testEntry = MenuEntry.builder()
                 .price(2000)
                 .name("test entry")
-                .description("for testing").build());
+                .description("for testing").build();
+
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
 
         service.addOrder(DeliveryOrder.OrderBuilder()
                 .deliveryAddress("testowa 2/1")
@@ -75,7 +78,9 @@ public class App {
                 .OrderedProduct(orderedProducts)
                 .build());
 
-        orderedProducts.add(MenuEntry.builder().price(2000).name("test entry").description("for testing").build());
+        orderedProducts = new ArrayList<>();
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
 
         service.addOrder(SpotOrder.OrderBuilder()
                 .tableNumber(2)
@@ -84,6 +89,10 @@ public class App {
                 .OrderedProduct(orderedProducts)
                 .build());
 
+        orderedProducts = new ArrayList<>();
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+
         service.addOrder(SpotOrder.OrderBuilder()
                 .tableNumber(1)
                 .orderTime(Instant.now())
@@ -91,11 +100,28 @@ public class App {
                 .OrderedProduct(orderedProducts)
                 .build());
 
+        orderedProducts = new ArrayList<>();
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+
         service.addOrder(DeliveryOrder.OrderBuilder()
                 .deliveryAddress("ulica 1/2")
                 .orderTime(Instant.now())
                 .id(2)
                 .OrderedProduct(orderedProducts)
                 .build());
+
+        orderedProducts = new ArrayList<>();
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+        orderedProducts.add(MenuEntryUtil.cloneMenuEntry(testEntry));
+
+        service.addOrder(DeliveryOrder.OrderBuilder()
+                .deliveryAddress("ulica 1/2")
+                .orderTime(Instant.now().minusMillis(900001))
+                .id(2)
+                .OrderedProduct(orderedProducts)
+                .build());
     }
+
+
 }

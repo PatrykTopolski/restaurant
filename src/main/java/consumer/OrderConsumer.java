@@ -6,6 +6,7 @@ import service.EmployeeService;
 import service.OrderService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RequiredArgsConstructor
 public class OrderConsumer extends Thread{
@@ -14,6 +15,7 @@ public class OrderConsumer extends Thread{
     private final EmployeeService employeeService;
     private Order bench;
     private boolean isRunning = true;
+    private Random random = new Random();
     @Override
     public void run() {
         while (isRunning){
@@ -56,10 +58,25 @@ public class OrderConsumer extends Thread{
     private void loadOrderToBench(){
         Optional<Order> overdueOrder = orderService.getNextDelayedOrder();
         if (overdueOrder.isPresent()){
-            bench = overdueOrder.get();
+            System.out.println("received delayed order");
+            boolean accepted = random.nextBoolean();
+            if (accepted){
+                System.out.println("order accepted");
+                Order order = overdueOrder.get();
+                applyDiscount(order);
+                bench = order;
+            }else{
+                System.out.println("rejected delayed");
+                loadOrderToBench();
+            }
+
         }else {
             Optional<Order> nextOrder = orderService.getNextOrder();
             bench = nextOrder.orElse(null);
         }
+    }
+
+    private void applyDiscount(Order order){
+        order.getOrderedProduct().forEach(product -> product.setPrice(product.getPrice() * 0.8));
     }
 }
