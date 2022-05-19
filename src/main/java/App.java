@@ -27,6 +27,7 @@ public class App {
         OrderService orderService = new OrderService(q);
         OrderConsumer orderConsumer = new OrderConsumer(orderService, new LinkedList<>(), employeeService );
         addOrdersToService(orderService);
+        addOrdersToService(orderService);
         initEntries(entry);
         populateEmployees(employeeService);
         ApplicationController appController = new ApplicationController(
@@ -89,6 +90,20 @@ public class App {
                 .available(true)
                 .description("99% miensa")
                 .price(5.99)
+                .build());
+        entry.add(MenuEntry.builder()
+                .id(2)
+                .name("chili con carne")
+                .available(true)
+                .description("Papica!")
+                .price(30.99)
+                .build());
+        entry.add(MenuEntry.builder()
+                .id(2)
+                .name("burgerson")
+                .available(true)
+                .description("with cheese")
+                .price(45.99)
                 .build());
     }
 
