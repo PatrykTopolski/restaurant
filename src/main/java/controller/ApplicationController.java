@@ -1,8 +1,13 @@
 package controller;
 
+import consumer.DeliveryConsumer;
 import consumer.OrderConsumer;
+import consumer.SpotConsumer;
+import exceptions.LastEmployeeException;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import model.employee.Cook;
+import model.employee.Employee;
+import model.employee.Supplier;
 import model.menu.MenuEntry;
 import model.order.DeliveryOrder;
 import model.order.Order;
@@ -22,7 +27,9 @@ public class ApplicationController {
     private final MenuService menuService;
     private final OrderService orderService;
     private final EmployeeService employeeService;
-    private OrderConsumer consumer;
+    private OrderConsumer orderConsumer;
+    private DeliveryConsumer deliveryConsumer;
+    private SpotConsumer spotConsumer;
 
     public void runApplication(){
         boolean running = true;
@@ -39,6 +46,7 @@ public class ApplicationController {
                             .price(getInputDouble("provide price"))
                             .description(getInputString("provide description"))
                             .build());
+
                     break;
                 case 3:
                     menuService.changeAvailability(getInputInt("provide menu entry id:"));
@@ -71,35 +79,103 @@ public class ApplicationController {
                     orderService.printOrdersInQueue();
                     break;
                 case 9:
-                    consumer.getCompletedOrders().forEach(System.out::println);
+                    /*
+                    to print in the correct order I would add field "time completed"
+                    then combine both Queues then Compare by date and print
+                    but I don't have time to implement
+                    */
+                    spotConsumer.printDeliveredOrdes();
+                    deliveryConsumer.printDeliveredOrdes();
+                    break;
+                case 10:
+                    double spotRevenue = spotConsumer.calcDeliveryRevenue();
+                    double deliveryRevenue = deliveryConsumer.calcDeliveryRevenue();
+                    System.out.println("spot revenue: " + spotRevenue);
+                    System.out.println("delivery revenue: " + deliveryRevenue);
+                    double sum = spotRevenue + deliveryRevenue;
+                    System.out.println("global revenue: " + sum);
+                    break;
+                case 11:
+                    int employeeType = getInputInt("1. add new cook\n2.add new delivery man\n3. add new waiter");
+                    if (employeeType == 1){
+                        employeeService.addCook(Cook.EmployeeBuilder()
+                                .cookingTimeReduction(getInputInt("provide time reduction in milliseconds"))
+                                .name(getInputString("provide name"))
+                                .surname(getInputString("provide surname"))
+                                .phone(getInputString("provide phone"))
+                                .build());
+                    }else if (employeeType == 2) {
+                        employeeService.addSupplier(Supplier.EmployeeBuilder()
+                                .type(Supplier.Type.DELIVERY_MAN)
+                                .tip(0)
+                                .name(getInputString("provide name"))
+                                .surname(getInputString("provide surname"))
+                                .phone(getInputString("provide phone"))
+                                .build());
+                    } else if (employeeType == 3) {
+                        employeeService.addSupplier(Supplier.EmployeeBuilder()
+                                .type(Supplier.Type.WAITER)
+                                .tip(0)
+                                .name(getInputString("provide name"))
+                                .surname(getInputString("provide surname"))
+                                .phone(getInputString("provide phone"))
+                                .build());
+                    }
+                    break;
+                case 12:
+                    int employeeTypeDel = getInputInt("1. delete cook\n2. delete supplier");
+                    try {
+                        if (employeeTypeDel == 1) {
+                            employeeService.deleteCookById(getInputInt("provide cook id"));
+                        } else employeeService.deleteSupplierById(getInputInt("provide supplier id"));
+                    }catch (LastEmployeeException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 13:
-                    if (consumer.canBeRun()){
+                    if (orderConsumer.canBeRun() && spotConsumer.canBeRun() && deliveryConsumer.canBeRun()){
                         System.out.println("starting consumer");
-                        consumer.start();
-                    }else {
-                        System.out.println("old consumer cant be run, creating new");
-                        List<Order> completedTemp = consumer.getCompletedOrders();
+                        orderConsumer.start();
+                        deliveryConsumer.start();
+                        spotConsumer.start();
 
-                        consumer = new OrderConsumer(orderService, completedTemp, employeeService);
-                        System.out.println("starting new consumer");
-                        consumer.start();
+                    }else {
+                        System.out.println("old consumers cant be run, creating new");
+                        Queue<Order> completedTemp = orderConsumer.getCompletedOrders();
+                        Queue<Order> deliveredToPlace = spotConsumer.getDeliveredOrders();
+                        Queue<Order> deliveredOnSpot = spotConsumer.getDeliveredOrders();
+                        orderConsumer = new OrderConsumer(orderService, completedTemp, employeeService);
+                        spotConsumer = new SpotConsumer(orderConsumer, employeeService, deliveredOnSpot);
+                        deliveryConsumer = new DeliveryConsumer(orderConsumer, employeeService, deliveredToPlace);
+                        System.out.println("starting new consumers");
+                        orderConsumer.start();
                     }
                     break;
                 case 14:
                     System.out.println("turning off consumer");
-                    consumer.turnOff();
+                    wakeAndKillThreads();
+                    break;
+                case 15:
+                    employeeService.printEmployees();
                     break;
                 case 16:
-                    consumer.turnOff();
+                    wakeAndKillThreads();
                     running = false;
-                    System.out.println("closing app");
                     break;
                 default:
                     System.out.println("wrong input");
                     // code block
             }
         }
+    }
+
+    private void wakeAndKillThreads(){
+        orderConsumer.wakeToKill();
+        employeeService.wakeToKill();
+        spotConsumer.killThread();
+        deliveryConsumer.killThread();
+        orderService.wakeToKill();
+        orderConsumer.killThread();
     }
 
 
@@ -134,7 +210,7 @@ public class ApplicationController {
                 + "11. add new employee\n"
                 + "12. delete employee\n"
                 + "13. execute order 66 (kitchen)\n"
-                + "14. stop executing orders\n"
+                + "14. stop executing orders(wait until current consumers are done until starting new ones)\n"
                 + "15. show employee details\n"
                 + "16. exit");
         return scanner.nextInt();
