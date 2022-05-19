@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 public class OrderTest {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         PriorityQueue<Order> q = new PriorityQueue<>(new OrdersComparator());
         OrderService service = new OrderService(q);
 
@@ -47,11 +47,7 @@ public class OrderTest {
         System.out.println("delayed order : " + service.getNextDelayedOrder());
 
         System.out.println("===========================");
-        System.out.println("next order is: " +service.getNextOrder());
-        System.out.println("next order is: " +service.getNextOrder());
-        System.out.println("next order is: " +service.getNextOrder());
-        System.out.println("next order is: " +service.getNextOrder());
-        System.out.println("next order is: " +service.getNextOrder());
+
         System.out.println("end");
     }
 }
