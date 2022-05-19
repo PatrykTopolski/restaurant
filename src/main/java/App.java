@@ -1,4 +1,6 @@
+import consumer.DeliveryConsumer;
 import consumer.OrderConsumer;
+import consumer.SpotConsumer;
 import controller.ApplicationController;
 import model.employee.Cook;
 import model.employee.Supplier;
@@ -7,35 +9,63 @@ import model.menu.MenuEntry;
 import model.order.Order;
 import model.order.SpotOrder;
 import repository.MenuRepositoryImpl;
-import repository.Repository;
 import service.EmployeeService;
 import service.MenuService;
 import service.OrderService;
 import utils.MenuEntryUtil;
 import utils.OrdersComparator;
-
-
-import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class App {
     public static void main(String[] args){
         //here spring would do most of the work injecting components where needed (autowired or final class fields), instead I do it manually
         PriorityQueue<Order> q = new PriorityQueue<>(new OrdersComparator());
         List<MenuEntry> entry = new ArrayList<>();
-        EmployeeService employeeService = new EmployeeService(new ArrayList<>(), new ArrayList<>());
+        EmployeeService employeeService = new EmployeeService(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         OrderService orderService = new OrderService(q);
+        OrderConsumer orderConsumer = new OrderConsumer(orderService, new LinkedList<>(), employeeService );
         addOrdersToService(orderService);
         initEntries(entry);
+        populateEmployees(employeeService);
         ApplicationController appController = new ApplicationController(
                         new Scanner(System.in),
                         new MenuService(new MenuRepositoryImpl(), entry),
                         orderService,
                 employeeService,
-                new OrderConsumer(orderService, new LinkedList<>(), employeeService ));
+                orderConsumer,
+                new DeliveryConsumer(orderConsumer,employeeService,new LinkedList<>()),
+                new SpotConsumer(orderConsumer,employeeService,new LinkedList<>()));
         appController.runApplication();
 
+    }
+
+    private static void populateEmployees(EmployeeService employeeService){
+        for (int i = 0; i < 4; i++) {
+           employeeService.addCook(Cook.EmployeeBuilder()
+                   .cookingTimeReduction(7000)
+                   .id(i)
+                   .name("test name " +i)
+                   .phone("testPhone")
+                   .surname("test surname " + i)
+                   .build());
+
+        }
+        employeeService.addSupplier(Supplier.EmployeeBuilder()
+                .type(Supplier.Type.DELIVERY_MAN)
+                .name("Patryk")
+                .phone("test")
+                .surname("test")
+                .tip(0)
+                .build());
+        employeeService.addSupplier(Supplier.EmployeeBuilder()
+                .type(Supplier.Type.WAITER)
+                .name("Patryk")
+                .phone("test")
+                .surname("test")
+                .tip(0)
+                .build());
     }
 
     private static void initEntries(List<MenuEntry> entry){
