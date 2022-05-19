@@ -10,6 +10,7 @@ public class Supplier extends Employee{
     private double tip;
     private Type type;
     private int completedOrders;
+    private boolean locked;
 
     @Builder(builderMethodName = "EmployeeBuilder")
     public Supplier(int id, String name, String surname, String phone, double tip, Type type) {
