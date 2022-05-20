@@ -42,6 +42,12 @@ public class DeliveryConsumer extends Thread{
     }
 
     private void deliverOnSpot(){
+        /*
+        here it works only for 1 supplier at a given time
+        i should get all suppliers that are not locked and for each
+        load order waiting for delivery or even do it with threadPool
+        lack of time to implement
+         */
         System.out.println("starting delivery service");
         Optional<Order> order = orderConsumer.getNextDeliver();
         Optional<Supplier> supplier = employeeService.takeNextDeliverySupplier();
