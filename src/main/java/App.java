@@ -92,14 +92,14 @@ public class App {
                 .price(5.99)
                 .build());
         entry.add(MenuEntry.builder()
-                .id(2)
+                .id(3)
                 .name("chili con carne")
                 .available(true)
                 .description("Papica!")
                 .price(30.99)
                 .build());
         entry.add(MenuEntry.builder()
-                .id(2)
+                .id(4)
                 .name("burgerson")
                 .available(true)
                 .description("with cheese")
